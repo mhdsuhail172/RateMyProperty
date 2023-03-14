@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -24,6 +25,7 @@ import com.mhdsuhail.ratemyproperty.ui.theme.Blue200
 import com.mhdsuhail.ratemyproperty.ui.theme.RateMyPropertyTheme
 import com.mhdsuhail.ratemyproperty.ui.theme.primaryTextColor
 import com.mhdsuhail.ratemyproperty.util.UiEvent
+import kotlinx.coroutines.flow.collect
 
 
 @Preview
@@ -31,7 +33,10 @@ import com.mhdsuhail.ratemyproperty.util.UiEvent
 fun PreviewContributeScreen() {
     RateMyPropertyTheme() {
         Surface {
-            ContributeScreen(onNavigate = {}, viewModel = ContributePageViewModel())
+            ContributeScreen(
+                onNavigate = {},
+                viewModel = ContributePageViewModel()
+            )
         }
     }
 }
@@ -41,10 +46,27 @@ fun ContributeScreen(
     onNavigate: (UiEvent.Navigate) -> Unit,
     viewModel: ContributePageViewModel = hiltViewModel()
 ) {
+
+    LaunchedEffect(key1 = 1) {
+        viewModel.uiEvent.collect { event ->
+
+            when (event) {
+
+                is UiEvent.Navigate -> {
+                    onNavigate(event)
+                }
+                else -> {}
+            }
+
+        }
+    }
+
     Scaffold() { paddingValues ->
 
         Column(
-            modifier = Modifier.padding(paddingValues).fillMaxWidth(),
+            modifier = Modifier
+                .padding(paddingValues)
+                .fillMaxWidth(),
             verticalArrangement = Arrangement.Top,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
